@@ -1,16 +1,91 @@
-# my_app
+# 📱 Flutter Attendance App
 
-A new Flutter project.
+Hi, I'm **Ali Azwar**, a junior backend developer passionate about building functional and clean applications.  
+This is a **Flutter-based attendance app** that supports student, teacher, and transaction management — ideal for educational environments like schools or learning centers.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 🚀 Features
 
-A few resources to get you started if this is your first Flutter project:
+- 🔐 Login for teachers
+- 👩‍🎓 Student data management
+- 🏫 Class and teacher page
+- 📅 Attendance recording system
+- 💰 Transaction and payment history
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🛠️ Built With
+
+- **Flutter** – UI toolkit for building natively compiled apps
+- **Dart** – Client-optimized programming language
+- **REST API** – Backend integration (Laravel/PHP recommended)
+- Cross-platform support: Android, iOS, Web, Windows, macOS, Linux
+
+---
+
+## ▶️ Getting Started
+
+To run this project locally:
+
+```bash
+git clone https://github.com/aliazwar/flutter-presensi-app.git
+cd flutter-presensi-app
+flutter pub get
+flutter run
+```
+
+Make sure you have Flutter SDK installed. Check it with:
+
+```bash
+flutter doctor
+```
+
+## 📁 Project Structure
+
+```
+lib/
+├── main.dart
+├── halaman_1.dart
+├── pages/
+│   ├── home_page.dart
+│   ├── login_page.dart
+│   ├── guru_page.dart
+│   ├── siswa_page.dart
+│   ├── kelas_page.dart
+│   ├── presensi_page.dart
+│   ├── transaksi_page.dart
+│   ├── riwayat_transaksi_page.dart
+│   └── project_detail_page.dart
+├── services/
+│   └── api_service.dart
+```
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
+Feel free to use, modify, and contribute — just don't forget to credit!
+
+---
+
+## 👤 About Me
+
+**Ali Azwar**  
+Junior Backend Developer  
+🌐 aliazwr.id | ✉️ irfanaliazwar23@gmail.com
+
+---
+
+### 🔧 Cara Menambahkan ke Repo:
+1. Buka folder project kamu
+2. Buat file baru bernama: `README.md`
+3. Copy-paste isi di atas ke dalamnya
+4. Simpan, lalu jalankan di terminal:
+
+```bash
+git add README.md
+git commit -m "Add professional README"
+git push
+```
