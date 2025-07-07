@@ -28,11 +28,24 @@ class ApiService {
 
   // Get all data (default GET)
   static Future<Map<String, dynamic>> fetchAll() async {
-    final response = await http.get(Uri.parse(baseUrl));
-    if (response.statusCode == 200) {
-      return json.decode(response.body);
-    } else {
-      throw Exception('Gagal mengambil data dari server');
+    try {
+      final response = await http.get(Uri.parse(baseUrl));
+      if (response.statusCode == 200) {
+        try {
+          return json.decode(response.body);
+        } catch (parseError) {
+          print('Error parsing JSON: $parseError');
+          print('Response body: ${response.body}');
+          throw Exception('Response tidak valid dari server');
+        }
+      } else {
+        throw Exception('HTTP Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      if (e is FormatException) {
+        throw Exception('Server mengembalikan response yang tidak valid');
+      }
+      throw Exception('Gagal mengambil data dari server: $e');
     }
   }
 
@@ -67,16 +80,54 @@ class ApiService {
   }
 
   // Tambah siswa
-  static Future<bool> tambahSiswa(Map<String, dynamic> data) async {
-    final response = await http.post(
-      Uri.parse(baseUrl),
-      body: {'action': 'tambah_siswa', ...data},
-    );
-    if (response.statusCode == 200) {
-      final res = json.decode(response.body);
-      return res['success'] == true;
+  static Future<Map<String, dynamic>> tambahSiswa(
+    Map<String, dynamic> data,
+  ) async {
+    try {
+      print('🔍 Sending data to API: $data');
+
+      final response = await http.post(
+        Uri.parse(baseUrl),
+        body: {'action': 'tambah_siswa', ...data},
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      );
+
+      print('📡 Status Code: ${response.statusCode}');
+      print('📄 Content Type: ${response.headers['content-type']}');
+      print('📄 Response Length: ${response.body.length} characters');
+      print('📄 Response Body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        try {
+          final res = json.decode(response.body);
+          print('✅ JSON parsed successfully: $res');
+          return {
+            'success': res['success'] == true,
+            'message': res['message'] ?? 'No message',
+            'data': res,
+          };
+        } catch (parseError) {
+          print('❌ Error parsing JSON: $parseError');
+          print('📄 Full response body: ${response.body}');
+          return {
+            'success': false,
+            'message': 'Failed to parse JSON response',
+            'error': parseError.toString(),
+          };
+        }
+      } else {
+        print('❌ HTTP Error: ${response.statusCode}');
+        print('📄 Error response body: ${response.body}');
+        return {
+          'success': false,
+          'message': 'HTTP Error: ${response.statusCode}',
+          'response': response.body,
+        };
+      }
+    } catch (e) {
+      print('💥 Network Error: $e');
+      return {'success': false, 'message': 'Network Error: $e'};
     }
-    return false;
   }
 
   // Tambah transaksi

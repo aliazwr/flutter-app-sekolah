@@ -20,6 +20,11 @@ class _SiswaPageState extends State<SiswaPage> {
   }
 
   Future<void> loadData() async {
+    setState(() {
+      isLoading = true;
+      error = null;
+    });
+
     try {
       final data = await ApiService.fetchSiswa();
       setState(() {
@@ -37,7 +42,12 @@ class _SiswaPageState extends State<SiswaPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Data Siswa')),
+      appBar: AppBar(
+        title: const Text('Data Siswa'),
+        actions: [
+          IconButton(icon: const Icon(Icons.refresh), onPressed: loadData),
+        ],
+      ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : error != null
@@ -68,9 +78,6 @@ class _SiswaPageState extends State<SiswaPage> {
             builder: (context) => const _TambahSiswaDialog(),
           );
           if (result == true) {
-            setState(() {
-              isLoading = true;
-            });
             await loadData();
           }
         },
@@ -163,22 +170,39 @@ class _TambahSiswaDialogState extends State<_TambahSiswaDialog> {
                     isLoading = true;
                     error = null;
                   });
-                  final success = await ApiService.tambahSiswa({
-                    'NIK': nikC.text,
-                    'NAMA': namaC.text,
-                    'ALAMAT': alamatC.text,
-                    'JENIS_KELAMIN': jkC.text,
-                    'TTL': ttlC.text,
-                    'KELAS': kelasC.text,
-                  });
-                  setState(() {
-                    isLoading = false;
-                  });
-                  if (success) {
-                    Navigator.pop(context, true);
-                  } else {
+                  try {
+                    print('📝 Form data: NIK=${nikC.text}, NAMA=${namaC.text}');
+
+                    final result = await ApiService.tambahSiswa({
+                      'NIK': nikC.text.trim(),
+                      'NAMA': namaC.text.trim(),
+                      'ALAMAT': alamatC.text.trim(),
+                      'JENIS_KELAMIN': jkC.text.trim(),
+                      'TTL': ttlC.text.trim(),
+                      'KELAS': kelasC.text.trim(),
+                    });
+
+                    print('📊 ApiService Result: $result');
+
+                    if (result['success'] == true) {
+                      print('✅ Siswa berhasil ditambahkan');
+                      Navigator.pop(context, true);
+                    } else {
+                      print('❌ Gagal menambah siswa');
+                      print('📝 Error Message: ${result['message']}');
+                      setState(() {
+                        error =
+                            'Gagal menambah data siswa: ${result['message']}';
+                      });
+                    }
+                  } catch (e) {
+                    print('💥 Exception saat tambah siswa: $e');
                     setState(() {
-                      error = 'Gagal menambah data siswa';
+                      error = 'Error: $e';
+                    });
+                  } finally {
+                    setState(() {
+                      isLoading = false;
                     });
                   }
                 },
